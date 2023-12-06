@@ -1,13 +1,18 @@
 import sys
+from functools import reduce
 
-with open(sys.argv[1]) as f:
-	input = [line.strip().split() for line in f.readlines()]
-times = list(map(int, input[0][1:]))
-distance = list(map(int, input[1][1:]))
-
-total = 1
-for time, dist in zip(times, distance):
-	ways = [i for i in range(1,time) if i * (time - i) > dist]
-	total *= ways[-1] - ways[0] + 1
-print(total)
-
+print(
+    reduce(
+        lambda acc, vals: acc * (vals[-1] - vals[0] + 1),
+        [
+            [i for i in range(1, time) if i * (time - i) > dist]
+            for time, dist in zip(
+                *[
+                    list(map(int, line.strip().split()[1:]))
+                    for line in open(sys.argv[1]).readlines()
+                ]
+            )
+        ],
+        1,
+    )
+)
